@@ -1,0 +1,94 @@
+_schema-version: "3.2"
+ID: globant-productos
+description: practica crud
+version: 0.0.1
+modules:
+- name: globant-productos-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: globant-productos-destination-service
+    parameters:
+      content-target: true
+  - name: globant-productos-repo-host
+    parameters:
+      service-key:
+        name: globant-productos-repo-host-key
+  - name: globant-productos-uaa
+    parameters:
+      service-key:
+        name: globant-productos-uaa-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: globant-productos_html_repo_host
+          ServiceInstanceName: globant-productos-html5-srv
+          ServiceKeyName: globant-productos-repo-host-key
+          sap.cloud.service: globant-productos
+        - Authentication: OAuth2UserTokenExchange
+          Name: globant-productos_uaa
+          ServiceInstanceName: globant-productos-xsuaa-srv
+          ServiceKeyName: globant-productos-uaa-key
+          sap.cloud.service: globant-productos
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: globant-productos-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: globant-productos-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - globantproductos.zip
+      name: globantproductos
+      target-path: resources/
+- name: globantproductos
+  type: html5
+  path: .
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: globant-productos-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: globant-productos-destination-service
+    service-plan: lite
+- name: globant-productos-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: globant-productos-xsuaa-srv
+    service-plan: application
+- name: globant-productos-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: globant-productos-html5-srv
+    service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true

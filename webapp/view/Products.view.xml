@@ -1,0 +1,25 @@
+<mvc:View controllerName="globant.productos.controller.Products"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m">
+ <Page id="page" title="{i18n>title}">
+<content>
+
+
+           <VBox id="_IDGenVBox1">
+                <Title id="_IDGenTitle1" text="{i18n>Create Client}"></Title>
+
+                <Input placeholder="Enter the ID for the Client" id="idinput"/>
+                <Input placeholder="Enter the Client name" id="nameinput"/>
+                <Input placeholder="Enter the Company name" id="companyinput"/>
+                <Input placeholder="Enter the Client Title" id="titleinput"/>
+          
+                <Button text="Save" press="createClient"/>
+                <Button text="Cancel" press="createClient"/>
+              
+           </VBox>
+           
+           
+        
+        </content>
+    </Page>
+</mvc:View>
