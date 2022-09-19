@@ -11,22 +11,25 @@ sap.ui.define([
         return Controller.extend("globant.productos.controller.Products", {
 
             onInit: function () {
+
+            },
+            onSave: function (){
               const oModel = this.getView().getModel();
-              const datos = {
-                  firstName = "fname",
-                  lastName = "lname",
-                  companyName= "cname",
-                  city= "city"
+              const data = {
+                  firstName :"fname",
+                  lastName : "lname",
+                  companyName: "cname",
+                  city: "city"
                 };
-              oModel.create("/Customers", datos, null,{
+              oModel.create("/Customers", data, null,{
                   succes:function(oData){
                       sap.m.MessageToast.show('Customer added successfully');
                   }.bind(this),
                   error: function(){
-                     sap.m.MessageToast.show('Failed to add customer');
+                    sap.m.MessageToast.show('Failed to add customer');
             }.bind(this)
           });
-        }
+            }
     });
         });
     

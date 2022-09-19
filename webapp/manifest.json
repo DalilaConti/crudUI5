@@ -99,14 +99,8 @@
                     "target": [
                         "TargetProducts"
                     ]
-                },
-                {
-                    "name": "RouteCategories",
-                    "pattern": "products/{CategoryID}",
-                    "target": [
-                        "TargetProducts"
-                    ]
                 }
+                
             ],
             "targets": {
                 "TargetProducts": {
