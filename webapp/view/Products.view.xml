@@ -1,23 +1,32 @@
 <mvc:View controllerName="globant.productos.controller.Products"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m">
-      <Title id="_IDGenTitle1" text="{i18n>Customers}"></Title>
-      <VBox>
-      
-		            <Label text="First Name"/>
-					<Input type="Text" value="{fname}"/>
-					<Label text="Last Name"/>
-					<Input type="Text" value="{lname}"/>
-					<Label text="Company Name"/>
-					<Input type="Text" value="{cname}"/>
-					<Label text="City"/>
-					<Input type="Text" value="{city}"/>
-			
-			   </VBox> 
-			   <Button type="Accept" text='Save Customer' press='onSave'></Button>
-               <Button type="Accept" text='Update Customer' press='onUpdate'></Button>
-			   <Button type="Accept" text='Delete  Customer' press='onDelete'></Button>
+
+    <Page id="page"  title="{i18n>title}">
+      <content>
+        <VBox>
+           <List id="list" items="{/Products}" mode="SingleSelect">
+                            <items>
+                                <StandardListItem title="{Name}" description="{ID}"></StandardListItem>
+                            </items>
+                        </List>
+
+                    <Label text="Product ID"/>
+					<Input id= "pID" type="Number" value="{productID}"/>
+
+		            <Label text="Name"/>
+					<Input id= "pname" type="Text" value="{Name}"/>
+                    
+					
+			   <Button type="Accept" text='Create Product' press='onCreate'></Button>
+               <Button type="Accept" text='Update Product' press='onUpdate'></Button>
+			   <Button type="Accept" text='Delete  Product' press='onDelete'></Button>
+                
              
-	
-      
+              </VBox> 
+             
+	  </content>
+     </Page> 
 </mvc:View>
+
+	
