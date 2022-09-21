@@ -58,14 +58,29 @@ sap.ui.define([
                         console.log("Error: ", oError);
                         sap.m.MessageToast.show('Failed to update Product');
                     }.bind(this)
-              
-                // NOTA: Fijate que sería lo ideal que agregues más validaciones. Te recomiendo las 
-                // siguientes: 
-                // 1) Validar que el usuario no modifique campos clave como el id
-                // 2) Validar que el usuario no envie un string vacio como nombre
+                });
+                },
+                onDelete: function (){
+                    const sContext = this.byId("list").getSelectedItem().getBindingContextPath();
+                    const name = this.getView().byId("pname").getValue();
+                    const ID = this.getView().byId("pID").getValue();
+                    const oData = {
+                        Name: name,
+                        ID: ID
+                    }
+                  
+                    const odataModel = this.getView().getModel();
+                    odataModel.remove(sContext, oData,{
+                        success: function (_odata) {
+                            sap.m.MessageToast.show('Product deleted successfully');
+                        }.bind(this),
+                        error: function (oError) {
+                            console.log("Error: ", oError);
+                            sap.m.MessageToast.show('Failed to delete Product');
+                        }.bind(this)
             
                 });
-            }
+                }
         });
     });
      
