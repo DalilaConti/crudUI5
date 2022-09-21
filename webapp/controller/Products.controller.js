@@ -60,28 +60,23 @@ sap.ui.define([
                     }.bind(this)
                 });
                 },
-                onDelete: function (){
+                onDelete: function () {
                     const sContext = this.byId("list").getSelectedItem().getBindingContextPath();
-                    const name = this.getView().byId("pname").getValue();
-                    const ID = this.getView().byId("pID").getValue();
-                    const oData = {
-                        Name: name,
-                        ID: ID
-                    }
-                  
                     const odataModel = this.getView().getModel();
-                    odataModel.remove(sContext, oData,{
-                        success: function (_odata) {
+                    odataModel.remove(sContext, {
+                        success: function (odata) {
                             sap.m.MessageToast.show('Product deleted successfully');
                         }.bind(this),
                         error: function (oError) {
                             console.log("Error: ", oError);
                             sap.m.MessageToast.show('Failed to delete Product');
                         }.bind(this)
-            
-                });
+                    });
                 }
         });
-    });
-     
+    }); 
+            
+               
+              
+   
    
