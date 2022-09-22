@@ -9,18 +9,18 @@
 			placeholder="Search for..."
 			enableSuggestions="true"
 			search=".onSearch"
-			suggest=".onSuggest"
+            suggest=".onSuggest"
 			suggestionItems="{
 				path: '/Products',
 				sorter: { path: 'Name' }
 			}">
-			<SuggestionItem id="SuggestionItem" text="{Name}" description="{path:'Name'}" key="{ProductID}" />
+			<SuggestionItem id="SuggestionItem" text="{Name}" description="{path:'ID'}" key="{ID}" />
 		</SearchField>
 		
          <content>
      
         <VBox>
-           <List id="list" items="{/Products}" mode="SingleSelect">
+           <List id="list" items="{/Products}" mode="MultiSelect">
                             <items>
                                 <StandardListItem title="{Name}" description="{ID}"></StandardListItem>
                             </items>
@@ -36,6 +36,7 @@
 			   <Button type="Accept" text='Create Product' press='onCreate'></Button>
                <Button type="Accept" text='Update Product' press='onUpdate'></Button>
 			   <Button type="Accept" text='Delete  Product' press='onDelete'></Button>
+               <Button type="Accept" text='Delete  Multiselect' press='onDeleteSelectedItems'></Button>
                 
              
               </VBox> 

@@ -1,18 +1,19 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
-    "sap/ui/model/Filter"
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, _MessageToast, Filter) {
+    function (Controller, _MessageToast, Filter, FilterOperator) {
         "use strict";
 
         return Controller.extend("globant.productos.controller.Products", {
 
             onInit: function () {
-
+               
             },
             onCreate: function (){
                 const ID = this.getView().byId("pID").getValue(); 
@@ -26,15 +27,22 @@ sap.ui.define([
              const oModel = this.getView().getModel();
               oModel.create("/Products", data, {
                   success:function(_oData){
+                    this.clearInputs();
                       sap.m.MessageToast.show('Product added successfully');
                   }.bind(this),
                   error: function(){
                     sap.m.MessageToast.show('Failed to add Product');
             }.bind(this)
-          
-              });
-              },
-              onUpdate: function () {
+       
+    });
+    },
+    clearInputs: function(){
+        const name = this.getView().byId("pname");
+        const ID = this.getView().byId("pID");
+        name.setValue("");
+        ID.setValue("");
+    },
+                onUpdate: function () {
                 // Primero obtenemos el 'path' del producto que queremos modificar
                 // para eso, de nuestra lista tomamos el item seleccionado y mediante los
                 // métodos que nos da SAPUI5, obtendremos el path. sContext valdrá algo como "Products(123)"
@@ -53,6 +61,7 @@ sap.ui.define([
                 // usamos uno dinámico que apunte al producto que queremos modificar. 
                 oModel.update(sContext, oData, {
                     success: function (_odata) {
+                        this.clearInputs();
                         sap.m.MessageToast.show('Product updated successfully');
                     }.bind(this),
                     error: function (oError) {
@@ -60,6 +69,12 @@ sap.ui.define([
                         sap.m.MessageToast.show('Failed to update Product');
                     }.bind(this)
                 });
+                },
+                clearInputs: function(){
+                    const name = this.getView().byId("pname");
+                    const ID = this.getView().byId("pID");
+                    name.setValue("");
+                    ID.setValue("");
                 },
                 onDelete: function () {
                     const sContext = this.byId("list").getSelectedItem().getBindingContextPath();
@@ -74,35 +89,54 @@ sap.ui.define([
                         }.bind(this)
                     });
                     },
-                    onSearch: function (event) {
-                        var oItem = event.getParameter("suggestionItem");
-                        if (oItem) {
-                            sap.m.MessageToast.show("Search for: " + oItem.getText());
-                        } else {
-                            sap.m.MessageToast.show("Search is fired!");
+
+                  //  onDeleteSelectedItems: function(_oEvent){
+                  //   var _oList = this.getView().byId("list").getSelectedItem().getBindingContextPath();
+                    //  const oListData = this.getView().getModel();      
+                     //  for (const i=oListData.length -1; i>=0; i--) {
+                     //   var oThisObj = oListData[i].getObject();
+                      //  var index = $.map(oListData.results, function(obj, index) {
+                       //     if(obj === oThisObj) {
+                        //        return index;
+                        //    }
+                       // })
+                        //oListData.results.splice(index, 1);
+                     // }
+                    
+                      //this._oList.getModel().setData(oListData); 
+                     // this._oList.removeSelections(true);
+                  
+                    
+                onSearch: function (event) {
+                        let oItem = event.getParameter("suggestionItem"),
+                            oBinding = this.byId("list").getBinding("items"),
+                            oFilter;
+                        oItem.getText() ? oFilter = new Filter("Name", FilterOperator.Contains, oItem.getText()) : oFilter = null;
+                        if (oFilter) {
+                            oBinding.filter(oFilter, "Application");
                         }
-                     
                     },
-            
-                    onSuggest: function (event) {
+                          onSuggest: function (event) {
                         var sValue = event.getParameter("suggestValue"),
                             aFilters = [];
-                        if (sValue) {
-                            aFilters = [
-                                new Filter([
-                                    new Filter("ProductId", function (sText) {
-                                        return (sText || "").toUpperCase().indexOf(sValue.toUpperCase()) > -1;
-                                    }),
-                                    new Filter("Name", function (sDes) {
-                                        return (sDes || "").toUpperCase().indexOf(sValue.toUpperCase()) > -1;
-                                    })
-                                ], false)
-                            ];
-                        }
-                       
-                        this.oSF.getBinding("suggestionItems").filter(aFilters);
-                        this.oSF.suggest();
-                    }
+                            if (sValue) {
+                                aFilters.push(new Filter({
+                                filters: [
+                                    new Filter("Name", FilterOperator.Contains, sValue.toUpperCase())
+                                   // new Filter("ID", FilterOperator.EQ, sValue.toUpperCase())
+                                    ],
+                                    and: false
+                                    }));
+                                    }
+                                    var oSource = event.getSource();
+                                    var oBinding = oSource.getBinding('suggestionItems');
+                                    oBinding.filter(aFilters);
+                                    oBinding.attachEventOnce('dataReceived', function() {
+                                    oSource.suggest();
+                                    });
+                            
+                                }
+                    
 
                 });
             });
