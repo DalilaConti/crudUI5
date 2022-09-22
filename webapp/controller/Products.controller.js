@@ -1,11 +1,12 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/m/MessageToast"
+    "sap/m/MessageToast",
+    "sap/ui/model/Filter"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, _MessageToast) {
+    function (Controller, _MessageToast, Filter) {
         "use strict";
 
         return Controller.extend("globant.productos.controller.Products", {
@@ -72,11 +73,40 @@ sap.ui.define([
                             sap.m.MessageToast.show('Failed to delete Product');
                         }.bind(this)
                     });
-                }
-        });
-    }); 
+                    },
+                    onSearch: function (event) {
+                        var oItem = event.getParameter("suggestionItem");
+                        if (oItem) {
+                            sap.m.MessageToast.show("Search for: " + oItem.getText());
+                        } else {
+                            sap.m.MessageToast.show("Search is fired!");
+                        }
+                     
+                    },
             
-               
+                    onSuggest: function (event) {
+                        var sValue = event.getParameter("suggestValue"),
+                            aFilters = [];
+                        if (sValue) {
+                            aFilters = [
+                                new Filter([
+                                    new Filter("ProductId", function (sText) {
+                                        return (sText || "").toUpperCase().indexOf(sValue.toUpperCase()) > -1;
+                                    }),
+                                    new Filter("Name", function (sDes) {
+                                        return (sDes || "").toUpperCase().indexOf(sValue.toUpperCase()) > -1;
+                                    })
+                                ], false)
+                            ];
+                        }
+                       
+                        this.oSF.getBinding("suggestionItems").filter(aFilters);
+                        this.oSF.suggest();
+                    }
+
+                });
+            });
+             
               
    
    

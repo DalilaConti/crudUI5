@@ -3,7 +3,22 @@
     xmlns="sap.m">
 
     <Page id="page"  title="{i18n>title}">
-      <content>
+		<SearchField
+			id="searchField"
+			width="50%"
+			placeholder="Search for..."
+			enableSuggestions="true"
+			search=".onSearch"
+			suggest=".onSuggest"
+			suggestionItems="{
+				path: '/Products',
+				sorter: { path: 'Name' }
+			}">
+			<SuggestionItem id="SuggestionItem" text="{Name}" description="{path:'Name'}" key="{ProductID}" />
+		</SearchField>
+		
+         <content>
+     
         <VBox>
            <List id="list" items="{/Products}" mode="SingleSelect">
                             <items>
