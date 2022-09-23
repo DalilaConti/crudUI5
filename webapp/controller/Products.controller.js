@@ -1,13 +1,14 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/MessageToast",
+    "sap/m/MessageBox",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, _MessageToast, Filter, FilterOperator) {
+    function (Controller, _MessageToast, Filter, FilterOperator, _MessageBox) {
         "use strict";
 
         return Controller.extend("globant.productos.controller.Products", {
@@ -28,10 +29,10 @@ sap.ui.define([
               oModel.create("/Products", data, {
                   success:function(_oData){
                     this.clearInputs();
-                      sap.m.MessageToast.show('Product added successfully');
+                      sap.m.MessageBox.success('Product added successfully');
                   }.bind(this),
                   error: function(){
-                    sap.m.MessageToast.show('Failed to add Product');
+                    sap.m.MessageBox.error('Failed to add Product');
             }.bind(this)
        
     });
@@ -62,11 +63,11 @@ sap.ui.define([
                 oModel.update(sContext, oData, {
                     success: function (_odata) {
                         this.clearInputs();
-                        sap.m.MessageToast.show('Product updated successfully');
+                        sap.m.MessageBox.success('Product updated successfully');
                     }.bind(this),
                     error: function (oError) {
                         console.log("Error: ", oError);
-                        sap.m.MessageToast.show('Failed to update Product');
+                        sap.m.MessageBox.error('Failed to update Product');
                     }.bind(this)
                 });
                 },
@@ -81,34 +82,15 @@ sap.ui.define([
                     const odataModel = this.getView().getModel();
                     odataModel.remove(sContext, {
                         success: function (odata) {
-                            sap.m.MessageToast.show('Product deleted successfully');
+                            sap.m.MessageBox.success('Product deleted successfully');
                         }.bind(this),
                         error: function (oError) {
                             console.log("Error: ", oError);
-                            sap.m.MessageToast.show('Failed to delete Product');
+                            sap.m.MessageBox.error('Failed to delete Product');
                         }.bind(this)
                     });
                     },
-                   
-
-                  //  onDeleteSelectedItems: function(_oEvent){
-                  //   var _oList = this.getView().byId("list").getSelectedItem().getBindingContextPath();
-                    //  const oListData = this.getView().getModel();      
-                     //  for (const i=oListData.length -1; i>=0; i--) {
-                     //   var oThisObj = oListData[i].getObject();
-                      //  var index = $.map(oListData.results, function(obj, index) {
-                       //     if(obj === oThisObj) {
-                        //        return index;
-                        //    }
-                       // })
-                        //oListData.results.splice(index, 1);
-                     // }
-                    
-                      //this._oList.getModel().setData(oListData); 
-                     // this._oList.removeSelections(true);
-                  
-                    
-                onSearch: function (event) {
+                  onSearch: function (event) {
                         let oItem = event.getParameter("suggestionItem"),
                             oBinding = this.byId("list").getBinding("items"),
                             oFilter;
@@ -137,16 +119,29 @@ sap.ui.define([
                                     });
                             
                                 },
-                                onDeleteSelectedItems: function(oEvent) {
-                                    var oList = oEvent.getSource();
-                                    var oContext = oEvent.getParameter("list").getBindingContext();
-                                    var oPath = oContext.getPath();
-                                    var oIndex = oPath.slice(1);
-                                    var m = oList.getModel();
-                                    var data = m.getProperty("/");
-                                    var removed = data.splice(oIndex, 1);
-                                    m.setProperty("/", data);
-                                }.bind(this)
+                                onDeleteSelectedItems: function (oEvent) {
+                                    const aContexts = this.byId("list").getSelectedContextPaths();
+                                    const oModel = this.getView().getModel();
+                                    let aDeffGroup = oModel.getDeferredGroups();
+                                    aDeffGroup.push("deletionGroup");
+                                    oModel.setDeferredGroups(aDeffGroup);
+                                    for (let i = 0; i < aContexts.length; i++) {
+                                        oModel.remove(aContexts[i], {
+                                            groupId: "deletionGroup",
+                                            success: function (odata) {
+                                                this.getView().byId("list").updateBindings();
+                                                sap.m.MessageBox.success("Products deleted successfully");
+                                            }.bind(this),
+                                            error: function (oError) {
+                                                sap.m.MessageBox.error("Failed to delete Products");
+                                                console.log("Error: ", oError);
+                                            }.bind(this)
+                                        });
+                                    }
+                                    oModel.submitChanges({
+                                        groupId: "deletionGroup",
+                                    })
+                                }  
                             });
                         
         });

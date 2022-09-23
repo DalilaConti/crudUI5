@@ -22,9 +22,14 @@
         <VBox>
            <List id="list" 
                  items="{/Products}" 
-                 mode="MultiSelect">
+                 mode="MultiSelect"
+                 >
                             <items>
-                                <StandardListItem title="{Name}" description="{ID}"></StandardListItem>
+                                <StandardListItem title="{Name}" description="{ID}"
+                                icon = "https://play-lh.googleusercontent.com/ZfiJshhzZNH796dxKeiZcNHyBoYEfxXwbPhGuo8Y0v7PEaRC_z5ftyLTW67bjZfQfA"
+                                
+       
+                                ></StandardListItem>
                             </items>
                         </List>
 
@@ -32,13 +37,15 @@
 					<Input id= "pID" type="Number" value="{productID}"/>
 
 		            <Label text="Name"/>
-					<Input id= "pname" type="Text" value="{Name}"/>
+					<Input id= "pname" 
+                    type="Text" value="{Name}"/>
+                   
                     
 					
-			   <Button type="Accept" text='Create Product' press='onCreate'></Button>
-               <Button type="Accept" text='Update Product' press='onUpdate'></Button>
-			   <Button type="Accept" text='Delete  Product' press='onDelete'></Button>
-               <Button type="Accept" text='Delete  Multiselect' press='onDeleteSelectedItems'></Button>
+			   <Button type="Emphasized" text='Create Product' press='onCreate'></Button>
+               <Button type="Emphasized" text='Update Product' press='onUpdate'></Button>
+			   <Button type="Emphasized" text='Delete  Product' press='onDelete'></Button>
+               <Button type="Emphasized" text='Delete  Multiselect' press='onDeleteSelectedItems'></Button>
                 
              
               </VBox> 
