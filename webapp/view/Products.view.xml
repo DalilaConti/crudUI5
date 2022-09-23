@@ -20,7 +20,9 @@
          <content>
      
         <VBox>
-           <List id="list" items="{/Products}" mode="MultiSelect">
+           <List id="list" 
+                 items="{/Products}" 
+                 mode="MultiSelect">
                             <items>
                                 <StandardListItem title="{Name}" description="{ID}"></StandardListItem>
                             </items>

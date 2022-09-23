@@ -89,6 +89,7 @@ sap.ui.define([
                         }.bind(this)
                     });
                     },
+                   
 
                   //  onDeleteSelectedItems: function(_oEvent){
                   //   var _oList = this.getView().byId("list").getSelectedItem().getBindingContextPath();
@@ -135,11 +136,22 @@ sap.ui.define([
                                     oSource.suggest();
                                     });
                             
-                                }
-                    
-
-                });
-            });
+                                },
+                                onDeleteSelectedItems: function(oEvent) {
+                                    var oList = oEvent.getSource();
+                                    var oContext = oEvent.getParameter("list").getBindingContext();
+                                    var oPath = oContext.getPath();
+                                    var oIndex = oPath.slice(1);
+                                    var m = oList.getModel();
+                                    var data = m.getProperty("/");
+                                    var removed = data.splice(oIndex, 1);
+                                    m.setProperty("/", data);
+                                }.bind(this)
+                            });
+                        
+        });
+                            
+ 
              
               
    
